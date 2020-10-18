@@ -245,7 +245,7 @@ function App() {
     return () => {};
   }, [baseCurrency, baseCurrencyValue, conversionCurrency, latestRates]);
 
-  const handleReverseCurrencies = (e) => {
+  const handleReverseCurrencies = e => {
     e.preventDefault();
     const fromValue = baseCurrencyValue;
     const toValue = conversionCurrencyValue;
@@ -255,10 +255,38 @@ function App() {
     setConversionCurrency(fromCurrency);
     setBaseCurrencyValue(toValue);
     setConversionCurrencyValue(fromValue);
-  }
-  console.log('render')
+  };
+
+  const baseToQuoteRate = () => {
+    if (baseCurrency && latestRates && conversionCurrency) {
+      if (baseCurrency === 'USD') {
+        return latestRates[conversionCurrency];
+      } else if (conversionCurrency === 'USD') {
+        return (1 / latestRates[conversionCurrency]).toFixed(6);
+      } else {
+        return ((1/latestRates[baseCurrency]) * latestRates[conversionCurrency]).toFixed(6);
+      }
+    }
+  };
+
+  const quoteToBaseRate = () => {
+    if (baseCurrency && latestRates && conversionCurrency) {
+      if (conversionCurrency === 'USD') {
+        return latestRates[baseCurrency];
+      } else if (baseCurrency === 'USD') {
+        return (1 / latestRates[conversionCurrency]).toFixed(6);
+      } else {
+        return ((1/latestRates[conversionCurrency]) * latestRates[baseCurrency]).toFixed(6)
+      }
+    }
+  };
+
   return (
     <div>
+      <div>
+        rate: 1 {baseCurrency} = {baseToQuoteRate()} {conversionCurrency}, 1{' '}
+        {conversionCurrency} = {quoteToBaseRate()} {baseCurrency}
+      </div>
       <form action="">
         <input
           type="number"
@@ -298,7 +326,9 @@ function App() {
             </option>
           ))}
         </select>
-        <button onClick={(e) => handleReverseCurrencies(e)}>Reverse Currencies</button>
+        <button onClick={e => handleReverseCurrencies(e)}>
+          Reverse Currencies
+        </button>
       </form>
     </div>
   );
