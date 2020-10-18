@@ -206,16 +206,15 @@ function App() {
     return () => {};
   }, [latestRates]);
 
-  // const convertFromBase = e => {};
-  const convertToBase = e => {
-    setConversionCurrencyValue(e.target.value);
+  const convertToBase = newConversionValue => {
+    setConversionCurrencyValue(newConversionValue)
     if (conversionCurrency === 'USD') {
-      setBaseCurrencyValue(e.target.value * latestRates[baseCurrency]);
+      setBaseCurrencyValue((newConversionValue * latestRates[baseCurrency]).toFixed(2));
     } else {
       setBaseCurrencyValue(
-        (1 / latestRates[conversionCurrency]) *
+       ((1 / latestRates[conversionCurrency]) *
           latestRates[baseCurrency] *
-          e.target.value,
+          newConversionValue).toFixed(2),
       );
     }
   };
@@ -225,13 +224,13 @@ function App() {
       if ((baseCurrency, baseCurrencyValue, conversionCurrency, latestRates)) {
         if (baseCurrency === 'USD') {
           setConversionCurrencyValue(
-            baseCurrencyValue * latestRates[conversionCurrency],
+            (baseCurrencyValue * latestRates[conversionCurrency]).toFixed(2),
           );
         } else {
           setConversionCurrencyValue(
-            (1 / latestRates[baseCurrency]) *
+            ((1 / latestRates[baseCurrency]) *
               latestRates[conversionCurrency] *
-              baseCurrencyValue,
+              baseCurrencyValue).toFixed(2)
           );
         }
       }
@@ -245,6 +244,7 @@ function App() {
       <form action="" onSubmit={e => convert(e)}>
         <input
           type="number"
+          step="1"
           placeholder="Amount"
           value={baseCurrencyValue}
           onChange={e => setBaseCurrencyValue(e.target.value)}
@@ -263,9 +263,10 @@ function App() {
         </select>
         <input
           type="number"
+          step="1"
           placeholder="Amount"
           value={conversionCurrencyValue}
-          onChange={e => setConversionCurrencyValue(e.target.value)}
+          onChange={e => convertToBase(e.target.value)}
         />
         <select
           name=""
