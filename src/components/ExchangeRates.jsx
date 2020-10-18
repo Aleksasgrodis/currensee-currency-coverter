@@ -16,7 +16,6 @@ function ExchangeRates({ latestRates, baseCurrency, quoteCurrency }) {
       }
     }
   };
-
   const quoteToBaseRate = () => {
     if (baseCurrency && latestRates && quoteCurrency) {
       if (quoteCurrency === 'USD') {
@@ -31,14 +30,12 @@ function ExchangeRates({ latestRates, baseCurrency, quoteCurrency }) {
       }
     }
   };
-
   const fullCurrencyName = symbol => {
     const { currency } = currencies.find(
       currency => currency.symbol === symbol,
     );
     return currency;
   };
-  fullCurrencyName('USD');
   return (
     <div className="exchange-rates">
       <div className="rate">
@@ -53,8 +50,6 @@ function ExchangeRates({ latestRates, baseCurrency, quoteCurrency }) {
           1 {quoteCurrency} = {quoteToBaseRate()} {baseCurrency}
         </div>
       </div>
-      {/* 1 {baseCurrency} = {baseToQuoteRate()}{' '}
-      {quoteCurrency}, 1 {quoteCurrency} = {quoteToBaseRate()} {baseCurrency} */}
     </div>
   );
 }

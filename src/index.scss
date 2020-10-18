@@ -21,7 +21,7 @@ body {
     padding: 0;
     font-size: 2.7em;
     align-self: center;
-    color:rgb(48, 48, 48);
+    color: rgb(48, 48, 48);
   }
   .exchange-rates {
     align-self: center;
@@ -35,12 +35,10 @@ body {
     justify-content: space-between;
     padding: 15px;
     background: white;
-    
     .rate {
       display: flex;
       justify-content: center;
       flex-direction: column;
-
       &:first-of-type {
         border-bottom: 1px solid rgb(237, 237, 237);
         padding-bottom: 10px;
@@ -54,11 +52,8 @@ body {
         font-size: 14px;
         align-self: center;
         margin-bottom: 3px;
-        // border-bottom: 1px solid black;
       }
       .equals {
-        // font-weight: bold;
-        // justify-self: center;
         font-size: 20px;
         align-self: center;
         color: rgb(116, 116, 116);
@@ -68,7 +63,6 @@ body {
   form {
     align-self: center;
     display: flex;
-    // flex-direction: column;
     .rows {
       .row {
         display: flex;
@@ -79,7 +73,6 @@ body {
           }
         }
         input {
-
           font-size: 16px;
           height: 36px;
           padding: 0 0 0 12px;
@@ -112,7 +105,6 @@ body {
         }
       }
     }
-
     .flip {
       background: white;
       color: rgb(194, 194, 194);
@@ -124,7 +116,7 @@ body {
       height: 100%;
       padding: 5px 20px;
       &:hover {
-        box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.14);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.14);
         cursor: pointer;
         color: rgb(53, 53, 53);
         svg {
