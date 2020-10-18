@@ -207,14 +207,18 @@ function App() {
   }, [latestRates]);
 
   const convertToBase = newConversionValue => {
-    setConversionCurrencyValue(newConversionValue)
+    setConversionCurrencyValue(newConversionValue);
     if (conversionCurrency === 'USD') {
-      setBaseCurrencyValue((newConversionValue * latestRates[baseCurrency]).toFixed(2));
+      setBaseCurrencyValue(
+        (newConversionValue * latestRates[baseCurrency]).toFixed(2),
+      );
     } else {
       setBaseCurrencyValue(
-       ((1 / latestRates[conversionCurrency]) *
+        (
+          (1 / latestRates[conversionCurrency]) *
           latestRates[baseCurrency] *
-          newConversionValue).toFixed(2),
+          newConversionValue
+        ).toFixed(2),
       );
     }
   };
@@ -228,9 +232,11 @@ function App() {
           );
         } else {
           setConversionCurrencyValue(
-            ((1 / latestRates[baseCurrency]) *
+            (
+              (1 / latestRates[baseCurrency]) *
               latestRates[conversionCurrency] *
-              baseCurrencyValue).toFixed(2)
+              baseCurrencyValue
+            ).toFixed(2),
           );
         }
       }
@@ -239,13 +245,24 @@ function App() {
     return () => {};
   }, [baseCurrency, baseCurrencyValue, conversionCurrency, latestRates]);
 
+  const handleReverseCurrencies = (e) => {
+    e.preventDefault();
+    const fromValue = baseCurrencyValue;
+    const toValue = conversionCurrencyValue;
+    const fromCurrency = baseCurrency;
+    const toCurrency = conversionCurrency;
+    setBaseCurrency(toCurrency);
+    setConversionCurrency(fromCurrency);
+    setBaseCurrencyValue(toValue);
+    setConversionCurrencyValue(fromValue);
+  }
+  console.log('render')
   return (
     <div>
-      <form action="" onSubmit={e => convert(e)}>
+      <form action="">
         <input
           type="number"
           step="1"
-          placeholder="Amount"
           value={baseCurrencyValue}
           onChange={e => setBaseCurrencyValue(e.target.value)}
         />
@@ -253,6 +270,7 @@ function App() {
           name=""
           id=""
           defaultValue="USD"
+          value={baseCurrency}
           onChange={e => setBaseCurrency(e.target.value)}
         >
           {currencies.map(c => (
@@ -264,7 +282,6 @@ function App() {
         <input
           type="number"
           step="1"
-          placeholder="Amount"
           value={conversionCurrencyValue}
           onChange={e => convertToBase(e.target.value)}
         />
@@ -272,6 +289,7 @@ function App() {
           name=""
           id=""
           defaultValue="EUR"
+          value={conversionCurrency}
           onChange={e => setConversionCurrency(e.target.value)}
         >
           {currencies.map(c => (
@@ -280,7 +298,7 @@ function App() {
             </option>
           ))}
         </select>
-        <button type="submit">Convert</button>
+        <button onClick={(e) => handleReverseCurrencies(e)}>Reverse Currencies</button>
       </form>
     </div>
   );
