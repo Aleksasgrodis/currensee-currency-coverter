@@ -3,8 +3,8 @@ import {format} from 'date-fns'
 
 function LastUpdatedAt({timestamp}) {
   return (
-    <div>
-      Rates last updated at: {format(timestamp, "HH:mm, MMMM d")}
+    <div className="updated">
+      Last updated at: {format(timestamp, "HH:mm, MMMM do")}
     </div>
   )
 }

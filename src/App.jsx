@@ -1,5 +1,6 @@
+import { faSync, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import ExchangeRates from './components/ExchangeRates';
 import LastUpdatedAt from './components/LastUpdatedAt';
 import currencies from './currencies';
@@ -185,19 +186,16 @@ function App() {
   const [quoteCurrency, setQuoteCurrency] = useState('EUR');
   const [quoteCurrencyValue, setQuoteCurrencyValue] = useState(null);
 
-  const convert = e => {
-    e.preventDefault();
-    fetch('/api/fetchLatest', {
-      method: 'POST',
-      body: JSON.stringify({
-        title: 'hello',
-      }),
-    })
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
-  };
   useEffect(() => {
+    // fetch('/api/fetchLatest', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     title: 'hello',
+    //   }),
+    // })
+    //   .then(res => res.json())
+    //   .then(data => console.log(data))
+    //   .catch(err => console.log(err));
     setLatestRates(rates);
     return () => {};
   }, []);
@@ -260,55 +258,61 @@ function App() {
     setQuoteCurrencyValue(fromValue);
   };
 
-  
-
   return (
-    <div>
-      <ExchangeRates latestRates={latestRates} baseCurrency={baseCurrency} quoteCurrency={quoteCurrency} />
+    <div className="app">
+      <h1 className="app-name">&#8373;U&#8377;&#8377;€N$&#163;&#163;</h1>
+      <ExchangeRates
+        latestRates={latestRates}
+        baseCurrency={baseCurrency}
+        quoteCurrency={quoteCurrency}
+      />
       <form action="">
-        <input
-          type="number"
-          step="1"
-          value={baseCurrencyValue}
-          onChange={e => setBaseCurrencyValue(e.target.value)}
-        />
-        <select
-          name=""
-          id=""
-          defaultValue="USD"
-          value={baseCurrency}
-          onChange={e => setBaseCurrency(e.target.value)}
-        >
-          {currencies.map(c => (
-            <option key={c.currency} value={c.symbol}>
-              {c.symbol}
-            </option>
-          ))}
-        </select>
-        <input
-          type="number"
-          step="1"
-          value={quoteCurrencyValue}
-          onChange={e => convertToBase(e.target.value)}
-        />
-        <select
-          name=""
-          id=""
-          defaultValue="EUR"
-          value={quoteCurrency}
-          onChange={e => setQuoteCurrency(e.target.value)}
-        >
-          {currencies.map(c => (
-            <option key={c.currency} value={c.symbol}>
-              {c.symbol}
-            </option>
-          ))}
-        </select>
-        <button onClick={e => handleReverseCurrencies(e)}>
-          Reverse Currencies
+        <div className="rows">
+          <div className="row">
+            <input
+              type="number"
+              step="1"
+              value={baseCurrencyValue}
+              onChange={e => setBaseCurrencyValue(e.target.value)}
+            />
+            <select
+              value={baseCurrency}
+              onChange={e => setBaseCurrency(e.target.value)}
+            >
+              {currencies.map(c => (
+                <option key={c.currency} value={c.symbol}>
+                  {c.symbol}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="row">
+            <input
+              type="number"
+              step="1"
+              value={quoteCurrencyValue || 0}
+              onChange={e => convertToBase(e.target.value)}
+            />
+            <select
+              value={quoteCurrency}
+              onChange={e => setQuoteCurrency(e.target.value)}
+            >
+              {currencies.map(c => (
+                <option key={c.currency} value={c.symbol}>
+                  {c.symbol}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <button className="flip" onClick={e => handleReverseCurrencies(e)}>
+          <FontAwesomeIcon icon={faSync} />
         </button>
-        <LastUpdatedAt timestamp={timestamp} />
+
+        
       </form>
+      <LastUpdatedAt timestamp={timestamp} />
     </div>
   );
 }
