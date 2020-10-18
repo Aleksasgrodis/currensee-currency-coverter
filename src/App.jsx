@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import ExchangeRates from './components/ExchangeRates';
+import LastUpdatedAt from './components/LastUpdatedAt';
 import currencies from './currencies';
 const rates = {
   AED: 3.67295,
@@ -177,10 +179,11 @@ const rates = {
 
 function App() {
   const [latestRates, setLatestRates] = useState(null);
+  const [timestamp, setTimestamp] = useState(1602705600);
   const [baseCurrency, setBaseCurrency] = useState('USD');
   const [baseCurrencyValue, setBaseCurrencyValue] = useState(1);
-  const [conversionCurrency, setConversionCurrency] = useState('EUR');
-  const [conversionCurrencyValue, setConversionCurrencyValue] = useState(null);
+  const [quoteCurrency, setQuoteCurrency] = useState('EUR');
+  const [quoteCurrencyValue, setQuoteCurrencyValue] = useState(null);
 
   const convert = e => {
     e.preventDefault();
@@ -201,21 +204,21 @@ function App() {
 
   useEffect(() => {
     if (latestRates) {
-      setConversionCurrencyValue(1 * latestRates['EUR']);
+      setQuoteCurrencyValue(1 * latestRates['EUR']);
     }
     return () => {};
   }, [latestRates]);
 
   const convertToBase = newConversionValue => {
-    setConversionCurrencyValue(newConversionValue);
-    if (conversionCurrency === 'USD') {
+    setQuoteCurrencyValue(newConversionValue);
+    if (quoteCurrency === 'USD') {
       setBaseCurrencyValue(
         (newConversionValue * latestRates[baseCurrency]).toFixed(2),
       );
     } else {
       setBaseCurrencyValue(
         (
-          (1 / latestRates[conversionCurrency]) *
+          (1 / latestRates[quoteCurrency]) *
           latestRates[baseCurrency] *
           newConversionValue
         ).toFixed(2),
@@ -225,16 +228,16 @@ function App() {
 
   useEffect(() => {
     const convertFromBase = () => {
-      if ((baseCurrency, baseCurrencyValue, conversionCurrency, latestRates)) {
+      if ((baseCurrency, baseCurrencyValue, quoteCurrency, latestRates)) {
         if (baseCurrency === 'USD') {
-          setConversionCurrencyValue(
-            (baseCurrencyValue * latestRates[conversionCurrency]).toFixed(2),
+          setQuoteCurrencyValue(
+            (baseCurrencyValue * latestRates[quoteCurrency]).toFixed(2),
           );
         } else {
-          setConversionCurrencyValue(
+          setQuoteCurrencyValue(
             (
               (1 / latestRates[baseCurrency]) *
-              latestRates[conversionCurrency] *
+              latestRates[quoteCurrency] *
               baseCurrencyValue
             ).toFixed(2),
           );
@@ -243,50 +246,25 @@ function App() {
     };
     convertFromBase();
     return () => {};
-  }, [baseCurrency, baseCurrencyValue, conversionCurrency, latestRates]);
+  }, [baseCurrency, baseCurrencyValue, quoteCurrency, latestRates]);
 
   const handleReverseCurrencies = e => {
     e.preventDefault();
     const fromValue = baseCurrencyValue;
-    const toValue = conversionCurrencyValue;
+    const toValue = quoteCurrencyValue;
     const fromCurrency = baseCurrency;
-    const toCurrency = conversionCurrency;
+    const toCurrency = quoteCurrency;
     setBaseCurrency(toCurrency);
-    setConversionCurrency(fromCurrency);
+    setQuoteCurrency(fromCurrency);
     setBaseCurrencyValue(toValue);
-    setConversionCurrencyValue(fromValue);
+    setQuoteCurrencyValue(fromValue);
   };
 
-  const baseToQuoteRate = () => {
-    if (baseCurrency && latestRates && conversionCurrency) {
-      if (baseCurrency === 'USD') {
-        return latestRates[conversionCurrency];
-      } else if (conversionCurrency === 'USD') {
-        return (1 / latestRates[conversionCurrency]).toFixed(6);
-      } else {
-        return ((1/latestRates[baseCurrency]) * latestRates[conversionCurrency]).toFixed(6);
-      }
-    }
-  };
-
-  const quoteToBaseRate = () => {
-    if (baseCurrency && latestRates && conversionCurrency) {
-      if (conversionCurrency === 'USD') {
-        return latestRates[baseCurrency];
-      } else if (baseCurrency === 'USD') {
-        return (1 / latestRates[conversionCurrency]).toFixed(6);
-      } else {
-        return ((1/latestRates[conversionCurrency]) * latestRates[baseCurrency]).toFixed(6)
-      }
-    }
-  };
+  
 
   return (
     <div>
-      <div>
-        rate: 1 {baseCurrency} = {baseToQuoteRate()} {conversionCurrency}, 1{' '}
-        {conversionCurrency} = {quoteToBaseRate()} {baseCurrency}
-      </div>
+      <ExchangeRates latestRates={latestRates} baseCurrency={baseCurrency} quoteCurrency={quoteCurrency} />
       <form action="">
         <input
           type="number"
@@ -310,15 +288,15 @@ function App() {
         <input
           type="number"
           step="1"
-          value={conversionCurrencyValue}
+          value={quoteCurrencyValue}
           onChange={e => convertToBase(e.target.value)}
         />
         <select
           name=""
           id=""
           defaultValue="EUR"
-          value={conversionCurrency}
-          onChange={e => setConversionCurrency(e.target.value)}
+          value={quoteCurrency}
+          onChange={e => setQuoteCurrency(e.target.value)}
         >
           {currencies.map(c => (
             <option key={c.currency} value={c.symbol}>
@@ -329,6 +307,7 @@ function App() {
         <button onClick={e => handleReverseCurrencies(e)}>
           Reverse Currencies
         </button>
+        <LastUpdatedAt timestamp={timestamp} />
       </form>
     </div>
   );
