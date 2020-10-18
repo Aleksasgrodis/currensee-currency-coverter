@@ -181,7 +181,7 @@ function App() {
   const [baseCurrencyValue, setBaseCurrencyValue] = useState(1);
   const [conversionCurrency, setConversionCurrency] = useState('EUR');
   const [conversionCurrencyValue, setConversionCurrencyValue] = useState(null);
-  
+
   const convert = e => {
     e.preventDefault();
     fetch('/api/fetchLatest', {
@@ -206,20 +206,7 @@ function App() {
     return () => {};
   }, [latestRates]);
 
-  const convertFromBase = e => {
-    setBaseCurrencyValue(e.target.value);
-    if (baseCurrency === 'USD') {
-      setConversionCurrencyValue(
-        e.target.value * latestRates[conversionCurrency],
-      );
-    } else {
-      setConversionCurrencyValue(
-        (1 / latestRates[baseCurrency]) *
-          latestRates[conversionCurrency] *
-          e.target.value,
-      );
-    }
-  };
+  // const convertFromBase = e => {};
   const convertToBase = e => {
     setConversionCurrencyValue(e.target.value);
     if (conversionCurrency === 'USD') {
@@ -233,6 +220,26 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    const convertFromBase = () => {
+      if ((baseCurrency, baseCurrencyValue, conversionCurrency, latestRates)) {
+        if (baseCurrency === 'USD') {
+          setConversionCurrencyValue(
+            baseCurrencyValue * latestRates[conversionCurrency],
+          );
+        } else {
+          setConversionCurrencyValue(
+            (1 / latestRates[baseCurrency]) *
+              latestRates[conversionCurrency] *
+              baseCurrencyValue,
+          );
+        }
+      }
+    };
+    convertFromBase();
+    return () => {};
+  }, [baseCurrency, baseCurrencyValue, conversionCurrency, latestRates]);
+
   return (
     <div>
       <form action="" onSubmit={e => convert(e)}>
@@ -240,7 +247,7 @@ function App() {
           type="number"
           placeholder="Amount"
           value={baseCurrencyValue}
-          onChange={e => convertFromBase(e)}
+          onChange={e => setBaseCurrencyValue(e.target.value)}
         />
         <select
           name=""
@@ -258,7 +265,7 @@ function App() {
           type="number"
           placeholder="Amount"
           value={conversionCurrencyValue}
-          onChange={e => convertToBase(e)}
+          onChange={e => setConversionCurrencyValue(e.target.value)}
         />
         <select
           name=""
