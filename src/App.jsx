@@ -106,9 +106,6 @@ function App() {
   return (
     <div className="app">
       <h1 className="app-name">&#8373;U&#8377;&#8377;€N$&#163;&#163;</h1>
-      <div>
-        
-      </div>
       <ExchangeRates
         latestRates={latestRates}
         baseCurrency={baseCurrency}
