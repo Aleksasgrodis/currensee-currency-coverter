@@ -17,9 +17,7 @@ function App() {
     fetch('/api/fetchLatest')
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         setLatestRates(data.rates);
-        console.log(data.timestamp);
         setTimestamp(data.timestamp);
       })
       .catch(err => console.log(err));
