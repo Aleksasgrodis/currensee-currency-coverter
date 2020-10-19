@@ -6,30 +6,16 @@ import LastUpdatedAt from './components/LastUpdatedAt';
 import currencies from './currencies';
 
 function App() {
-  const [latestRates, setLatestRates] = useState(null);
-  const [timestamp, setTimestamp] = useState(null);
+  const [latestRates, setLatestRates] = useState(
+    JSON.parse(localStorage.getItem('rates')) || null,
+  );
+  const [timestamp, setTimestamp] = useState(
+    parseInt(localStorage.getItem('timestamp')) || null,
+  );
   const [baseCurrency, setBaseCurrency] = useState('USD');
   const [baseCurrencyValue, setBaseCurrencyValue] = useState(1);
   const [quoteCurrency, setQuoteCurrency] = useState('EUR');
   const [quoteCurrencyValue, setQuoteCurrencyValue] = useState(null);
-
-  useEffect(() => {
-    fetch('/api/fetchLatest')
-      .then(res => res.json())
-      .then(data => {
-        setLatestRates(data.rates);
-        setTimestamp(data.timestamp);
-      })
-      .catch(err => console.log(err));
-    return () => {};
-  }, []);
-
-  useEffect(() => {
-    if (latestRates) {
-      setQuoteCurrencyValue(1 * latestRates['EUR']);
-    }
-    return () => {};
-  }, [latestRates]);
 
   const convertToBase = newConversionValue => {
     setQuoteCurrencyValue(newConversionValue);
@@ -47,6 +33,53 @@ function App() {
       );
     }
   };
+
+  const handleReverseCurrencies = e => {
+    e.preventDefault();
+    const fromValue = baseCurrencyValue;
+    const toValue = quoteCurrencyValue;
+    const fromCurrency = baseCurrency;
+    const toCurrency = quoteCurrency;
+    setBaseCurrency(toCurrency);
+    setQuoteCurrency(fromCurrency);
+    setBaseCurrencyValue(toValue);
+    setQuoteCurrencyValue(fromValue);
+  };
+
+  useEffect(() => {
+    const currentTime = parseInt(Date.now() / 1000);
+    const fetchLatest = () => {
+      fetch('/api/fetchLatest')
+        .then(res => res.json())
+        .then(data => {
+          setLatestRates(data.rates);
+          setTimestamp(data.timestamp);
+        })
+        .catch(err => console.log(err));
+    };
+    if (!localStorage.getItem('rates') || !localStorage.getItem('timestamp')) {
+      fetchLatest();
+    } else if (
+      currentTime - parseInt(localStorage.getItem('timestamp')) >
+      3600
+    ) {
+      fetchLatest();
+    }
+    return () => {};
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('rates', JSON.stringify(latestRates));
+    localStorage.setItem('timestamp', JSON.stringify(timestamp));
+    return () => {};
+  }, [latestRates, timestamp]);
+
+  useEffect(() => {
+    if (latestRates) {
+      setQuoteCurrencyValue(1 * latestRates['EUR']);
+    }
+    return () => {};
+  }, [latestRates]);
 
   useEffect(() => {
     const convertFromBase = () => {
@@ -69,18 +102,6 @@ function App() {
     convertFromBase();
     return () => {};
   }, [baseCurrency, baseCurrencyValue, quoteCurrency, latestRates]);
-
-  const handleReverseCurrencies = e => {
-    e.preventDefault();
-    const fromValue = baseCurrencyValue;
-    const toValue = quoteCurrencyValue;
-    const fromCurrency = baseCurrency;
-    const toCurrency = quoteCurrency;
-    setBaseCurrency(toCurrency);
-    setQuoteCurrency(fromCurrency);
-    setBaseCurrencyValue(toValue);
-    setQuoteCurrencyValue(fromValue);
-  };
 
   return (
     <div className="app">
