@@ -144,7 +144,7 @@ body {
           border: 1px solid #dfe1e5;
           height: 38px;
           color: rgb(43, 43, 43);
-          font-size: 14px;
+          font-size: 16px;
           font-weight: 600;
           -ms-flex-item-align: center;
           -ms-grid-row-align: center;
@@ -166,8 +166,8 @@ body {
             ),
             linear-gradient(135deg, rgb(80, 80, 82) 50%, transparent 50%),
             linear-gradient(to right, #dfe1e5, #dfe1e5);
-          background-position: calc(100% - 12px) calc(1em + 2px),
-            calc(100% - 7px) calc(1em + 2px), 100% 0;
+          background-position: calc(100% - 12px) calc(1em + 1px),
+            calc(100% - 7px) calc(1em + 1px), 100% 0;
           background-size: 5px 5px, 5px 5px, 25% 100%;
           background-repeat: no-repeat;
           &:hover {
